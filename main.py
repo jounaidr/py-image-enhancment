@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+#from skimage import io
 from matplotlib import pyplot as plt
 from math import sqrt,exp
 
@@ -43,11 +44,11 @@ def process(kx,ky,a,f):
     plt.subplot(222)
     plt.imshow(np.abs(np.log(a)), cmap=plt.cm.gray)
 
-    #print np.shape(a)
-    b=np.zeros_like(a)
+    b = np.full_like(a, np.mean(a))
+    #b=np.zeros_like(a)
     for i in range(660):
         for j in range(371):
-            if not ( 330-kx<i<330+kx and (j<186-ky or j>186+ky)):
+            if not ((66-kx<i<66+kx) or (198-kx<i<198+kx) or ((330-kx<i<330+kx) and (j<185.5-ky or j>185.5+ky)) or (462-kx<i<462+kx) or (594-kx<i<594+kx)): #goes 132
                 b[j,i]=a[j,i]
 
     c=np.fft.ifft2(b)
@@ -88,23 +89,24 @@ img_spacial_bilateral = cv2.bilateralFilter(img,kernel_size, 255, 255)  # bilate
 
 img_fft_spectrum = np.fft.fft2(img_spacial_median)
 img_fft_spectrum_centered = np.fft.fftshift(img_fft_spectrum)
-img_fft_spectrum_decentered = np.fft.ifftshift(img_fft_spectrum_centered)
-img_no_freq_filter = np.fft.ifft2(img_fft_spectrum_decentered)
+#img_fft_spectrum_decentered = np.fft.ifftshift(img_fft_spectrum_centered)
+#img_no_freq_filter = np.fft.ifft2(img_fft_spectrum_decentered)
 
 # GAUSSIAN FILTER FREQUENCY DOMAIN
 
-b = process(1,1,img_fft_spectrum_centered,img)
+b = process(1,73,img_fft_spectrum_centered,img)  # 73 is ideal 49.16447766070407
 
-img_freq_gaussian_centered = b * gaussianLP(30, img.shape)
+
+img_freq_gaussian_centered = b * gaussianLP(40, img.shape)
 #img_freq_gaussian_centered = img_fft_spectrum_centered * gaussianLP(50, img.shape)
 img_freq_gaussian_inverse = np.fft.ifftshift(img_freq_gaussian_centered)
 img_freq_gaussian_processed = np.fft.ifft2(img_freq_gaussian_inverse)
 
-print(meanSquareError(img_clear, img_freq_gaussian_processed))
+
 
 #Plot high pass low pass stuff, do the other filters
 
-filtered_img = np.abs(img_no_freq_filter)
+filtered_img = np.abs(img_freq_gaussian_processed)
 filtered_img -= filtered_img.min()
 filtered_img = filtered_img*255 / filtered_img.max()
 filtered_img = filtered_img.astype(np.uint8)
@@ -127,17 +129,17 @@ plt.figure(figsize=(6.4*5, 4.8*5), constrained_layout=False)  # fft spectrum no 
 plt.subplot(141), plt.imshow(img_spacial_median, "gray"), plt.title("Median Spacial Domain Filter")
 plt.subplot(142), plt.imshow(np.log(1 + np.abs(img_fft_spectrum)), "gray"), plt.title("Spectrum")
 plt.subplot(143), plt.imshow(np.log(1 + np.abs(img_fft_spectrum_centered)), "gray"), plt.title("Centered Spectrum")
-plt.subplot(144), plt.imshow(np.log(1 + np.abs(img_fft_spectrum_decentered)), "gray"), plt.title("Decentralized")
+#plt.subplot(144), plt.imshow(np.log(1 + np.abs(img_fft_spectrum_decentered)), "gray"), plt.title("Decentralized")
 
 plt.figure(figsize=(6.4*5, 4.8*5), constrained_layout=False)  # gaussian frequency domain filters
 
 plt.subplot(141), plt.imshow(np.log(1 + np.abs(img_freq_gaussian_centered)), "gray"), plt.title("TEST")
 plt.subplot(142), plt.imshow(np.log(1 + np.abs(img_freq_gaussian_inverse)), "gray"), plt.title("TEST")
 plt.subplot(143), plt.imshow(np.abs(img_freq_gaussian_processed), "gray"), plt.title("TEST")
+plt.subplot(144), plt.imshow(sharpened_image, "gray"), plt.title("Sharp")
 
-
-
-
+print(np.square(np.subtract(img_clear,sharpened_image)).mean())
+print(meanSquareError(img_clear, sharpened_image))
 
 plt.show()
 
