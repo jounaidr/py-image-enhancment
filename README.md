@@ -1,5 +1,5 @@
 # py-image-enhancment
-A myriad of image enhancement techniques in both the spacial and frequency domains (implemented using opencv in python) inorder to remove
+A myriad of image enhancement techniques in both the spatial and frequency domains (implemented using opencv in python) inorder to remove
 the periodic and random noise from the following image:
 
 **Original** \
