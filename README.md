@@ -10,7 +10,7 @@ the periodic and random noise from the following image:
 
 The following image is the best results achieved (visually, not MSE wise):
 
-![PandaBest](https://raw.githubusercontent.com/jounaidr/py-image-enhancment/main/PandaNoise.bmp)
+![PandaBest](https://raw.githubusercontent.com/jounaidr/py-image-enhancment/main/docs/resources/PandaBest.bmp)
 
 Full mean squared error output of each technique used:
 
