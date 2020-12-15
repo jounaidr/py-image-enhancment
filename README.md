@@ -8,10 +8,12 @@ the periodic and random noise from the following image:
 **Noisy** \
 ![PandaNoise](https://raw.githubusercontent.com/jounaidr/py-image-enhancment/main/PandaNoise.bmp)
 
-**Best enhancment results achieved (visually, not MSE wise)** \
+The following image is the best results achieved (visually, not MSE wise):
+
+**'Boxes' Peaks Removal** \
 ![PandaBest](https://raw.githubusercontent.com/jounaidr/py-image-enhancment/main/docs/resources/PandaBest.bmp)
 
-**Full mean squared error output of each technique used:** \
+**Full mean squared error output of each technique used:**
 ```shell script
 Original image vs Noisy image mse:  96.05755942171037
 
